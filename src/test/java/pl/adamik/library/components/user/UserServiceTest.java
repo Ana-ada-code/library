@@ -6,12 +6,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pl.adamik.library.components.user.dto.UserDto;
+import pl.adamik.library.components.user.exeptions.DuplicatePeselException;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.*;
+
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
@@ -107,5 +110,51 @@ class UserServiceTest {
         // Then
         assertThat(result).isEmpty();
         verify(userRepository, times(1)).findAllByLastNameContainingIgnoreCase(lastName);
+    }
+
+    @Test
+    void shouldSaveUser_whenPeselIsUnique() {
+        // Given
+        UserDto userDto = new UserDto();
+        userDto.setFirstName("Anna");
+        userDto.setLastName("Kowalska");
+        userDto.setPesel("12345678901");
+        User userEntity = UserMapper.toEntity(userDto);
+        User savedUser = new User(1L, "Anna", "Kowalska", "12345678901");
+
+        when(userRepository.findByPesel(userDto.getPesel())).thenReturn(Optional.empty());
+        when(userRepository.save(any(User.class))).thenReturn(savedUser);
+
+        // When
+        UserDto result = userService.save(userDto);
+
+        // Then
+        assertThat(result).isNotNull();
+        assertThat(result.getId()).isEqualTo(1L);
+        assertThat(result.getFirstName()).isEqualTo("Anna");
+        assertThat(result.getLastName()).isEqualTo("Kowalska");
+        assertThat(result.getPesel()).isEqualTo("12345678901");
+
+        verify(userRepository, times(1)).findByPesel(userDto.getPesel());
+        verify(userRepository, times(1)).save(any(User.class));
+    }
+
+    @Test
+    void shouldThrowDuplicatePeselException_whenPeselAlreadyExists() {
+        // Given
+        UserDto userDto = new UserDto();
+        userDto.setFirstName("Jan");
+        userDto.setLastName("Nowak");
+        userDto.setPesel("98765432109");
+        User existingUser = new User(2L, "Jan", "Nowak", "98765432109");
+
+        when(userRepository.findByPesel(userDto.getPesel())).thenReturn(Optional.of(existingUser));
+
+        // When & Then
+        assertThatThrownBy(() -> userService.save(userDto))
+                .isInstanceOf(DuplicatePeselException.class);
+
+        verify(userRepository, times(1)).findByPesel(userDto.getPesel());
+        verify(userRepository, never()).save(any(User.class));
     }
 }
