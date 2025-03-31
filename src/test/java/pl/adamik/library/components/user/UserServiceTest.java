@@ -62,4 +62,50 @@ class UserServiceTest {
         assertThat(result).isEmpty();
         verify(userRepository, times(1)).findAll();
     }
+
+    @Test
+    void shouldReturnUsers_whenLastNameMatches() {
+        // Given
+        String lastName = "Nowak";
+
+        User user1 = new User();
+        user1.setId(1L);
+        user1.setFirstName("Anna");
+        user1.setLastName("Nowak");
+        user1.setPesel("12345678901");
+
+        User user2 = new User();
+        user2.setId(2L);
+        user2.setFirstName("Jan");
+        user2.setLastName("Nowakowski");
+        user2.setPesel("09876543210");
+
+        when(userRepository.findAllByLastNameContainingIgnoreCase(lastName))
+                .thenReturn(List.of(user1, user2));
+
+        // When
+        List<UserDto> result = userService.findByLastName(lastName);
+
+        // Then
+        assertThat(result).hasSize(2);
+        assertThat(result.get(0).getLastName()).containsIgnoringCase(lastName);
+        assertThat(result.get(1).getLastName()).containsIgnoringCase(lastName);
+
+        verify(userRepository, times(1)).findAllByLastNameContainingIgnoreCase(lastName);
+    }
+
+    @Test
+    void shouldReturnEmptyList_whenNoUsersMatch() {
+        // Given
+        String lastName = "Kowalski";
+        when(userRepository.findAllByLastNameContainingIgnoreCase(lastName))
+                .thenReturn(List.of());
+
+        // When
+        List<UserDto> result = userService.findByLastName(lastName);
+
+        // Then
+        assertThat(result).isEmpty();
+        verify(userRepository, times(1)).findAllByLastNameContainingIgnoreCase(lastName);
+    }
 }
