@@ -44,4 +44,23 @@ public class UserResource {
                 .toUri();
         return ResponseEntity.created(location).body(savedUser);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<UserDto> findById(@PathVariable Long id) {
+        return userService.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<UserDto> update(@PathVariable Long id, @RequestBody UserDto user) {
+        if (!id.equals(user.getId())) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Aktualizowany obiekt musi mieć id zgodne z id w ścieżce zasobu"
+            );
+        }
+        UserDto updatedUser = userService.update(user);
+        return ResponseEntity.ok(updatedUser);
+    }
 }

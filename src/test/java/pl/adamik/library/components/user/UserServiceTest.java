@@ -25,6 +25,9 @@ class UserServiceTest {
     @InjectMocks
     private UserService userService;
 
+    @Mock
+    private UserMapper userMapper;
+
     @Test
     void shouldReturnAllUsers_whenUsersExist() {
         // Given
@@ -152,6 +155,109 @@ class UserServiceTest {
 
         // When & Then
         assertThatThrownBy(() -> userService.save(userDto))
+                .isInstanceOf(DuplicatePeselException.class);
+
+        verify(userRepository, times(1)).findByPesel(userDto.getPesel());
+        verify(userRepository, never()).save(any(User.class));
+    }
+
+    @Test
+    void shouldReturnUserDto_whenUserExists() {
+        // Given
+        Long userId = 1L;
+        User user = new User();
+        user.setId(userId);
+        user.setFirstName("Anna");
+        user.setLastName("Kowalska");
+        user.setPesel("12345678901");
+
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+
+        // When
+        Optional<UserDto> result = userService.findById(userId);
+
+        // Then
+        assertThat(result).isPresent();
+        assertThat(result.get().getId()).isEqualTo(userId);
+        assertThat(result.get().getFirstName()).isEqualTo("Anna");
+        assertThat(result.get().getLastName()).isEqualTo("Kowalska");
+        assertThat(result.get().getPesel()).isEqualTo("12345678901");
+
+        verify(userRepository, times(1)).findById(userId);
+    }
+
+    @Test
+    void shouldReturnEmptyOptional_whenUserDoesNotExist() {
+        // Given
+        Long userId = 2L;
+
+        when(userRepository.findById(userId)).thenReturn(Optional.empty());
+
+        // When
+        Optional<UserDto> result = userService.findById(userId);
+
+        // Then
+        assertThat(result).isEmpty();
+
+        verify(userRepository, times(1)).findById(userId);
+    }
+
+    @Test
+    void shouldUpdateUser_whenPeselIsUniqueOrSameUser() {
+        // Given
+        UserDto userDto = new UserDto();
+        userDto.setId(1L);
+        userDto.setFirstName("Anna");
+        userDto.setLastName("Kowalska");
+        userDto.setPesel("12345678901");
+
+        User existingUser = new User();
+        existingUser.setId(1L);
+        existingUser.setFirstName("Anna");
+        existingUser.setLastName("Kowalska");
+        existingUser.setPesel("12345678901");
+
+        User updatedUser = new User();
+        updatedUser.setId(1L);
+        updatedUser.setFirstName("Anna");
+        updatedUser.setLastName("Nowak");
+        updatedUser.setPesel("12345678901");
+
+        when(userRepository.findByPesel(userDto.getPesel())).thenReturn(Optional.of(existingUser));
+        when(userRepository.save(any(User.class))).thenReturn(updatedUser);
+
+        // When
+        UserDto result = userService.update(userDto);
+
+        // Then
+        assertThat(result).isNotNull();
+        assertThat(result.getFirstName()).isEqualTo("Anna");
+        assertThat(result.getLastName()).isEqualTo("Nowak");
+        assertThat(result.getPesel()).isEqualTo("12345678901");
+
+        verify(userRepository, times(1)).findByPesel(userDto.getPesel());
+        verify(userRepository, times(1)).save(any(User.class));
+    }
+
+    @Test
+    void shouldThrowException_whenPeselBelongsToAnotherUser() {
+        // Given
+        UserDto userDto = new UserDto();
+        userDto.setId(2L);
+        userDto.setFirstName("Jan");
+        userDto.setLastName("Nowak");
+        userDto.setPesel("12345678901");
+
+        User existingUser = new User();
+        existingUser.setId(1L);
+        existingUser.setFirstName("Anna");
+        existingUser.setLastName("Kowalska");
+        existingUser.setPesel("12345678901");
+
+        when(userRepository.findByPesel(userDto.getPesel())).thenReturn(Optional.of(existingUser));
+
+        // When & Then
+        assertThatThrownBy(() -> userService.update(userDto))
                 .isInstanceOf(DuplicatePeselException.class);
 
         verify(userRepository, times(1)).findByPesel(userDto.getPesel());
