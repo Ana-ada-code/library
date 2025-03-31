@@ -7,4 +7,6 @@
 
     <include file="0001_create_table_users.xml" relativeToChangelogFile="true"/>
 
+    <include file="../testdata/0001_users.sql" relativeToChangelogFile="true" context="dev"/>
+
 </databaseChangeLog>
