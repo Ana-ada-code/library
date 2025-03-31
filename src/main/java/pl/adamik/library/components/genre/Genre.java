@@ -20,6 +20,7 @@ public class Genre {
     @Column(unique = true)
     private String name;
     private String description;
+    @Builder.Default
     @OneToMany(mappedBy = "genre")
     private Set<Book> books = new HashSet<>();
 }
