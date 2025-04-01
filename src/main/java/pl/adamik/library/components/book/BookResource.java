@@ -52,4 +52,17 @@ public class BookResource {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<BookDto> update(@PathVariable Long id,
+                                           @RequestBody BookDto book) {
+        if (!id.equals(book.id())) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Aktualizowany obiekt powinien mieć id zgodne z id ścieżki zasobu"
+            );
+        }
+        BookDto updatedBook = bookService.save(book);
+        return ResponseEntity.ok(updatedBook);
+    }
 }

@@ -33,14 +33,14 @@ public class BookService {
                 .collect(Collectors.toList());
     }
 
+    Optional<BookDto> findById(Long id) {
+        return bookRepository.findById(id).map(bookMapper::toDto);
+    }
+
     @Transactional
     BookDto save(BookDto book) {
         Book bookEntity = bookMapper.toEntity(book);
         Book savedBook = bookRepository.save(bookEntity);
         return bookMapper.toDto(savedBook);
-    }
-
-    Optional<BookDto> findById(Long id) {
-        return bookRepository.findById(id).map(bookMapper::toDto);
     }
 }
