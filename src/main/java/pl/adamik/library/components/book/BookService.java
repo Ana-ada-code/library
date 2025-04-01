@@ -23,4 +23,11 @@ public class BookService {
                 .map(bookMapper::toDto)
                 .collect(Collectors.toList());
     }
+
+    List<BookDto> findByTitleOrAuthorOrIsbn(String text) {
+        return bookRepository.findAllByTitleOrAuthorOrIsbn(text)
+                .stream()
+                .map(bookMapper::toDto)
+                .collect(Collectors.toList());
+    }
 }

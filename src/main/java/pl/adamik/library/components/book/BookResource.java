@@ -2,6 +2,7 @@ package pl.adamik.library.components.book;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import pl.adamik.library.components.book.dto.BookDto;
 
@@ -18,7 +19,11 @@ public class BookResource {
     }
 
     @GetMapping("")
-    public List<BookDto> findAll() {
-        return bookService.findAll();
+    public List<BookDto> findAll(@RequestParam(required = false) String text) {
+        if (text != null) {
+            return bookService.findByTitleOrAuthorOrIsbn(text);
+        } else {
+            return bookService.findAll();
+        }
     }
 }
