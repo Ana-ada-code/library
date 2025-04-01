@@ -6,7 +6,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pl.adamik.library.components.user.dto.UserDto;
-import pl.adamik.library.components.user.exeptions.DuplicatePeselException;
+import pl.adamik.library.components.user.exeption.DuplicatePeselException;
 
 import java.util.Collections;
 import java.util.List;

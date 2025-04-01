@@ -3,7 +3,7 @@ package pl.adamik.library.components.user;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.adamik.library.components.user.dto.UserDto;
-import pl.adamik.library.components.user.exeptions.DuplicatePeselException;
+import pl.adamik.library.components.user.exeption.DuplicatePeselException;
 
 import java.util.List;
 import java.util.Optional;

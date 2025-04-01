@@ -10,6 +10,7 @@ import pl.adamik.library.components.book.dto.BookDto;
 import java.util.Collections;
 import java.util.List;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.mockito.Mockito.*;
 
@@ -109,4 +110,50 @@ class BookServiceTest {
         verify(bookMapper, never()).toDto(any());
     }
 
+    @Test
+    void shouldSaveBookSuccessfully() {
+        // Given
+        BookDto bookDto = new BookDto(null, "Testowy Tytuł", "Testowy Autor", "123456789", "Fantasy");
+        Book bookEntity = new Book(null, "Testowy Tytuł", "Testowy Autor", "123456789", null);
+        Book savedBookEntity = new Book(1L, "Testowy Tytuł", "Testowy Autor", "123456789", null);
+        BookDto expectedDto = new BookDto(1L, "Testowy Tytuł", "Testowy Autor", "123456789", "Fantasy");
+
+        when(bookMapper.toEntity(bookDto)).thenReturn(bookEntity);
+        when(bookRepository.save(bookEntity)).thenReturn(savedBookEntity);
+        when(bookMapper.toDto(savedBookEntity)).thenReturn(expectedDto);
+
+        // When
+        BookDto result = bookService.save(bookDto);
+
+        // Then
+        assertThat(result).isEqualTo(expectedDto);
+        assertThat(result.id()).isEqualTo(1L);
+        assertThat(result.title()).isEqualTo("Testowy Tytuł");
+        assertThat(result.author()).isEqualTo("Testowy Autor");
+        assertThat(result.isbn()).isEqualTo("123456789");
+        assertThat(result.genre()).isEqualTo("Fantasy");
+
+        verify(bookMapper, times(1)).toEntity(bookDto);
+        verify(bookRepository, times(1)).save(bookEntity);
+        verify(bookMapper, times(1)).toDto(savedBookEntity);
+    }
+
+    @Test
+    void shouldThrowException_whenSavingFails() {
+        // Given
+        BookDto bookDto = new BookDto(null, "Testowy Tytuł", "Testowy Autor", "123456789", "Fantasy");
+        Book bookEntity = new Book(null, "Testowy Tytuł", "Testowy Autor", "123456789", null);
+
+        when(bookMapper.toEntity(bookDto)).thenReturn(bookEntity);
+        when(bookRepository.save(bookEntity)).thenThrow(new RuntimeException("Błąd zapisu w bazie"));
+
+        // When / Then
+        assertThatThrownBy(() -> bookService.save(bookDto))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessage("Błąd zapisu w bazie");
+
+        verify(bookMapper, times(1)).toEntity(bookDto);
+        verify(bookRepository, times(1)).save(bookEntity);
+        verify(bookMapper, never()).toDto(any());
+    }
 }

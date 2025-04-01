@@ -1,6 +1,7 @@
 package pl.adamik.library.components.book;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pl.adamik.library.components.book.dto.BookDto;
 
 import java.util.List;
@@ -29,5 +30,12 @@ public class BookService {
                 .stream()
                 .map(bookMapper::toDto)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    BookDto save(BookDto book) {
+        Book bookEntity = bookMapper.toEntity(book);
+        Book savedBook = bookRepository.save(bookEntity);
+        return bookMapper.toDto(savedBook);
     }
 }
