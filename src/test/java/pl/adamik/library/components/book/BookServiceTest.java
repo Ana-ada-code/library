@@ -9,6 +9,7 @@ import pl.adamik.library.components.book.dto.BookDto;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
@@ -154,6 +155,45 @@ class BookServiceTest {
 
         verify(bookMapper, times(1)).toEntity(bookDto);
         verify(bookRepository, times(1)).save(bookEntity);
+        verify(bookMapper, never()).toDto(any());
+    }
+
+    @Test
+    void shouldReturnBookDto_whenBookExists() {
+        // Given
+        Long bookId = 1L;
+        Book bookEntity = new Book(bookId, "Harry Potter", "J.K. Rowling", "9780747532743", null);
+        BookDto expectedDto = new BookDto(bookId, "Harry Potter", "J.K. Rowling", "9780747532743", "Fantasy");
+
+        when(bookRepository.findById(bookId)).thenReturn(Optional.of(bookEntity));
+        when(bookMapper.toDto(bookEntity)).thenReturn(expectedDto);
+
+        // When
+        Optional<BookDto> result = bookService.findById(bookId);
+
+        // Then
+        assertThat(result).isPresent();
+        assertThat(result.get()).isEqualTo(expectedDto);
+        assertThat(result.get().id()).isEqualTo(bookId);
+        assertThat(result.get().title()).isEqualTo("Harry Potter");
+
+        verify(bookRepository, times(1)).findById(bookId);
+        verify(bookMapper, times(1)).toDto(bookEntity);
+    }
+
+    @Test
+    void shouldReturnEmptyOptional_whenBookDoesNotExist() {
+        // Given
+        Long bookId = 99L;
+        when(bookRepository.findById(bookId)).thenReturn(Optional.empty());
+
+        // When
+        Optional<BookDto> result = bookService.findById(bookId);
+
+        // Then
+        assertThat(result).isEmpty();
+
+        verify(bookRepository, times(1)).findById(bookId);
         verify(bookMapper, never()).toDto(any());
     }
 }

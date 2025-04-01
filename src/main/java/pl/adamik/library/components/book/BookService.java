@@ -5,6 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.adamik.library.components.book.dto.BookDto;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,5 +38,9 @@ public class BookService {
         Book bookEntity = bookMapper.toEntity(book);
         Book savedBook = bookRepository.save(bookEntity);
         return bookMapper.toDto(savedBook);
+    }
+
+    Optional<BookDto> findById(Long id) {
+        return bookRepository.findById(id).map(bookMapper::toDto);
     }
 }

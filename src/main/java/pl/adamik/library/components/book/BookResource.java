@@ -45,4 +45,11 @@ public class BookResource {
                 .toUri();
         return ResponseEntity.created(location).body(savedBook);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<BookDto> findById(@PathVariable Long id) {
+        return bookService.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
 }
