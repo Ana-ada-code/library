@@ -9,6 +9,8 @@ import pl.adamik.library.components.book.Book;
 import pl.adamik.library.components.book.BookRepository;
 import pl.adamik.library.components.loan.dto.LoanDto;
 import pl.adamik.library.components.loan.exeption.InvalidLoadException;
+import pl.adamik.library.components.loan.exeption.LoanAlreadyFinishedException;
+import pl.adamik.library.components.loan.exeption.LoanNotFoundException;
 import pl.adamik.library.components.user.User;
 import pl.adamik.library.components.user.UserRepository;
 
@@ -43,7 +45,7 @@ class LoanServiceTest {
         LoanDto loanDto = new LoanDto(1L, LocalDate.now(), null, userId, bookId);
 
         // When
-        when(loanRepository.findByBook_IdAndEndDateIsNull(bookId))
+        when(loanRepository.findByBook_IdAndFinishIsNull(bookId))
                 .thenReturn(Optional.of(new Loan()));
 
         Throwable thrown = catchThrowable(() -> loanService.createLoan(loanDto));
@@ -53,7 +55,7 @@ class LoanServiceTest {
                 .isInstanceOf(InvalidLoadException.class)
                 .hasMessageContaining("Ta książka jest aktualnie przez kogoś wypożyczona");
 
-        verify(loanRepository, times(1)).findByBook_IdAndEndDateIsNull(bookId);
+        verify(loanRepository, times(1)).findByBook_IdAndFinishIsNull(bookId);
     }
 
     @Test
@@ -65,7 +67,7 @@ class LoanServiceTest {
         LoanDto loanDto = new LoanDto(1L, LocalDate.now(), null, userId, bookId);
 
         // When
-        when(loanRepository.findByBook_IdAndEndDateIsNull(bookId)).thenReturn(Optional.empty());
+        when(loanRepository.findByBook_IdAndFinishIsNull(bookId)).thenReturn(Optional.empty());
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
         Throwable thrown = catchThrowable(() -> loanService.createLoan(loanDto));
@@ -87,7 +89,7 @@ class LoanServiceTest {
         LoanDto loanDto = new LoanDto(1L, LocalDate.now(), null, userId, bookId);
 
         // When
-        when(loanRepository.findByBook_IdAndEndDateIsNull(bookId)).thenReturn(Optional.empty());
+        when(loanRepository.findByBook_IdAndFinishIsNull(bookId)).thenReturn(Optional.empty());
         when(userRepository.findById(userId)).thenReturn(Optional.of(new User()));
         when(bookRepository.findById(bookId)).thenReturn(Optional.empty());
 
@@ -120,7 +122,7 @@ class LoanServiceTest {
         loan.setBook(book);
         loan.setStart(LocalDate.now());
 
-        when(loanRepository.findByBook_IdAndEndDateIsNull(bookId)).thenReturn(Optional.empty());
+        when(loanRepository.findByBook_IdAndFinishIsNull(bookId)).thenReturn(Optional.empty());
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
         when(bookRepository.findById(bookId)).thenReturn(Optional.of(book));
         when(loanRepository.save(any(Loan.class))).thenReturn(loan);
@@ -135,5 +137,62 @@ class LoanServiceTest {
         assertThat(result.start()).isEqualTo(LocalDate.now());
 
         verify(loanRepository, times(1)).save(any(Loan.class));
+    }
+
+    @Test
+    void shouldThrowException_whenLoanNotFound() {
+        // Given
+        Long loanId = 1L;
+
+        // When
+        when(loanRepository.findById(loanId)).thenReturn(Optional.empty());
+
+        Throwable thrown = catchThrowable(() -> loanService.finishLoan(loanId));
+
+        // Then
+        assertThat(thrown)
+                .isInstanceOf(LoanNotFoundException.class);
+
+        verify(loanRepository, times(1)).findById(loanId);
+    }
+
+    @Test
+    void shouldThrowException_whenLoanAlreadyFinished() {
+        // Given
+        Long loanId = 1L;
+
+        Loan loan = new Loan();
+        loan.setFinish(LocalDate.now());
+
+        // When
+        when(loanRepository.findById(loanId)).thenReturn(Optional.of(loan));
+
+        Throwable thrown = catchThrowable(() -> loanService.finishLoan(loanId));
+
+        // Then
+        assertThat(thrown)
+                .isInstanceOf(LoanAlreadyFinishedException.class);
+
+        verify(loanRepository, times(1)).findById(loanId);
+    }
+
+    @Test
+    void shouldFinishLoan_whenLoanIsActive() {
+        // Given
+        Long loanId = 1L;
+
+        Loan loan = new Loan();
+        loan.setFinish(null);
+
+        // When
+        when(loanRepository.findById(loanId)).thenReturn(Optional.of(loan));
+
+        LocalDate finishDate = loanService.finishLoan(loanId);
+
+        // Then
+        assertThat(finishDate).isEqualTo(LocalDate.now());
+        assertThat(loan.getFinish()).isEqualTo(LocalDate.now());
+
+        verify(loanRepository, times(1)).findById(loanId);
     }
 }
