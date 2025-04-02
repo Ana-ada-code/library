@@ -118,7 +118,7 @@ class LoanServiceTest {
         Loan loan = new Loan();
         loan.setUser(user);
         loan.setBook(book);
-        loan.setStartDate(LocalDate.now());
+        loan.setStart(LocalDate.now());
 
         when(loanRepository.findByBook_IdAndEndDateIsNull(bookId)).thenReturn(Optional.empty());
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
@@ -132,7 +132,7 @@ class LoanServiceTest {
         assertThat(result).isNotNull();
         assertThat(result.userId()).isEqualTo(userId);
         assertThat(result.bookId()).isEqualTo(bookId);
-        assertThat(result.startDate()).isEqualTo(LocalDate.now());
+        assertThat(result.start()).isEqualTo(LocalDate.now());
 
         verify(loanRepository, times(1)).save(any(Loan.class));
     }

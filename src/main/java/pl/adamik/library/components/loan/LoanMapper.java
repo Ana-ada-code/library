@@ -7,8 +7,8 @@ public class LoanMapper {
     static LoanDto toDto(Loan loan) {
         return new LoanDto(
                 loan.getId(),
-                loan.getStartDate(),
-                loan.getEndDate(),
+                loan.getStart(),
+                loan.getFinish(),
                 loan.getUser().getId(),
                 loan.getBook().getId());
     }

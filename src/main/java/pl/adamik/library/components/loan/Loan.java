@@ -17,8 +17,8 @@ public class Loan {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private LocalDate startDate;
-    private LocalDate endDate;
+    private LocalDate start;
+    private LocalDate finish;
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;

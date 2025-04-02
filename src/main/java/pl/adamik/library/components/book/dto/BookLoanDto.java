@@ -4,8 +4,8 @@ import java.time.LocalDate;
 
 public record BookLoanDto(
         Long id,
-        LocalDate startDate,
-        LocalDate endDate,
+        LocalDate start,
+        LocalDate finish,
         Long userId,
         String firstName,
         String lastName,

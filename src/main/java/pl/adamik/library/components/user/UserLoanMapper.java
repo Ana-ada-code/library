@@ -8,8 +8,8 @@ public class UserLoanMapper {
     static UserLoanDto toDto(Loan loan) {
         return new UserLoanDto(
                 loan.getId(),
-                loan.getStartDate(),
-                loan.getEndDate(),
+                loan.getStart(),
+                loan.getFinish(),
                 loan.getBook().getId(),
                 loan.getBook().getTitle(),
                 loan.getBook().getAuthor(),

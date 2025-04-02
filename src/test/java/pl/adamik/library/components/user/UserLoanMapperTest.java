@@ -26,8 +26,8 @@ class UserLoanMapperTest {
 
         // Then
         assertThat(dto.id()).isEqualTo(10L);
-        assertThat(dto.startDate()).isEqualTo(LocalDate.of(2024, 1, 10));
-        assertThat(dto.endDate()).isEqualTo(LocalDate.of(2024, 1, 20));
+        assertThat(dto.start()).isEqualTo(LocalDate.of(2024, 1, 10));
+        assertThat(dto.finish()).isEqualTo(LocalDate.of(2024, 1, 20));
         assertThat(dto.bookId()).isEqualTo(1L);
         assertThat(dto.bookTitle()).isEqualTo("Dune");
         assertThat(dto.bookAuthor()).isEqualTo("Frank Herbert");
@@ -49,8 +49,8 @@ class UserLoanMapperTest {
 
         // Then
         assertThat(dto.id()).isEqualTo(11L);
-        assertThat(dto.startDate()).isEqualTo(LocalDate.of(2024, 2, 5));
-        assertThat(dto.endDate()).isNull();
+        assertThat(dto.start()).isEqualTo(LocalDate.of(2024, 2, 5));
+        assertThat(dto.finish()).isNull();
         assertThat(dto.bookId()).isEqualTo(2L);
         assertThat(dto.bookTitle()).isEqualTo("1984");
         assertThat(dto.bookAuthor()).isEqualTo("George Orwell");

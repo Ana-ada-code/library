@@ -27,7 +27,7 @@ public class LoanService {
     }
 
     LoanDto createLoan(LoanDto loanDto) {
-        Optional<Loan> activeLoanForBook = loanRepository.findByBook_IdAndEndDateIsNull(loanDto.id());
+        Optional<Loan> activeLoanForBook = loanRepository.findByBook_IdAndFinishIsNull(loanDto.id());
 
         activeLoanForBook.ifPresent((a) -> {
             throw new InvalidLoadException("Ta książka jest aktualnie przez kogoś wypożyczona");
@@ -42,7 +42,7 @@ public class LoanService {
         new InvalidLoadException("Brak użytkownika z id: " + userId)));
         loan.setBook(book.orElseThrow(() ->
                 new InvalidLoadException("Brak wypożyczenia z id: " + bookId)));
-        loan.setStartDate(LocalDate.now());
+        loan.setStart(LocalDate.now());
         return LoanMapper.toDto(loanRepository.save(loan));
     }
 }

@@ -4,8 +4,8 @@ import java.time.LocalDate;
 
 public record LoanDto(
         Long id,
-        LocalDate startDate,
-        LocalDate endDate,
+        LocalDate start,
+        LocalDate finish,
         Long userId,
         Long bookId){
 }
