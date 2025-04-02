@@ -1,4 +1,4 @@
-package pl.adamik.library.components.loanHistory;
+package pl.adamik.library.components.loan;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 @Entity
-public class LoanHistory {
+public class Loan {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

@@ -1,8 +1,8 @@
-package pl.adamik.library.components.loanHistory.dto;
+package pl.adamik.library.components.loan.dto;
 
 import java.time.LocalDate;
 
-public record LoanHistoryDto (
+public record LoanDto(
         Long id,
         LocalDate startDate,
         LocalDate endDate,

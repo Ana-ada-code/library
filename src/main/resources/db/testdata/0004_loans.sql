@@ -1,4 +1,4 @@
-INSERT INTO loan_history (start_date, end_date, user_id, book_id)
+INSERT INTO loan (start_date, end_date, user_id, book_id)
 VALUES ('2024-01-10', '2024-01-20', 1, 10),
        ('2024-02-05', '2024-02-15', 2, 20),
        ('2024-03-12', '2024-03-22', 3, 30),

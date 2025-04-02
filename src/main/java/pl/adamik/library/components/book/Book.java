@@ -3,7 +3,7 @@ package pl.adamik.library.components.book;
 import jakarta.persistence.*;
 import lombok.*;
 import pl.adamik.library.components.genre.Genre;
-import pl.adamik.library.components.loanHistory.LoanHistory;
+import pl.adamik.library.components.loan.Loan;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,5 +26,5 @@ public class Book {
     private Genre genre;
     @Builder.Default
     @OneToMany(mappedBy = "book")
-    private List<LoanHistory> loanHistories = new ArrayList<>();
+    private List<Loan> loans = new ArrayList<>();
 }

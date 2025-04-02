@@ -3,7 +3,7 @@ package pl.adamik.library.components.user;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.adamik.library.components.user.dto.UserDto;
-import pl.adamik.library.components.user.dto.UserLoanHistoryDto;
+import pl.adamik.library.components.user.dto.UserLoanDto;
 import pl.adamik.library.components.user.exeption.DuplicatePeselException;
 import pl.adamik.library.components.user.exeption.UserNotFoundException;
 
@@ -64,12 +64,12 @@ class UserService {
         return UserMapper.toDto(savedUser);
     }
 
-    List<UserLoanHistoryDto> getUserLoanHistories(Long userId) {
+    List<UserLoanDto> getUserLoans(Long userId) {
         return userRepository.findById(userId)
-                .map(User::getLoanHistories)
+                .map(User::getLoans)
                 .orElseThrow(UserNotFoundException::new)
                 .stream()
-                .map(UserLoanHistoryMapper::toDto)
+                .map(UserLoanMapper::toDto)
                 .collect(Collectors.toList());
     }
 }

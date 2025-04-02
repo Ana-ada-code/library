@@ -2,27 +2,27 @@ package pl.adamik.library.components.user;
 
 import org.junit.jupiter.api.Test;
 import pl.adamik.library.components.book.Book;
-import pl.adamik.library.components.loanHistory.LoanHistory;
-import pl.adamik.library.components.user.dto.UserLoanHistoryDto;
+import pl.adamik.library.components.loan.Loan;
+import pl.adamik.library.components.user.dto.UserLoanDto;
 
 import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class UserLoanHistoryMapperTest {
+class UserLoanMapperTest {
 
     @Test
-    void shouldMapLoanHistoryToDto() {
+    void shouldMapLoanToDto() {
         // Given
         Book book = new Book();
         book.setId(1L);
         book.setTitle("Dune");
         book.setAuthor("Frank Herbert");
         book.setIsbn("9780441013593");
-        LoanHistory loanHistory = new LoanHistory(10L, LocalDate.of(2024, 1, 10), LocalDate.of(2024, 1, 20), null, book);
+        Loan loan = new Loan(10L, LocalDate.of(2024, 1, 10), LocalDate.of(2024, 1, 20), null, book);
 
         // When
-        UserLoanHistoryDto dto = UserLoanHistoryMapper.toDto(loanHistory);
+        UserLoanDto dto = UserLoanMapper.toDto(loan);
 
         // Then
         assertThat(dto.id()).isEqualTo(10L);
@@ -42,10 +42,10 @@ class UserLoanHistoryMapperTest {
         book.setTitle("1984");
         book.setAuthor("George Orwell");
         book.setIsbn("9780451524935");
-        LoanHistory loanHistory = new LoanHistory(11L, LocalDate.of(2024, 2, 5), null, null, book);
+        Loan loan = new Loan(11L, LocalDate.of(2024, 2, 5), null, null, book);
 
         // When
-        UserLoanHistoryDto dto = UserLoanHistoryMapper.toDto(loanHistory);
+        UserLoanDto dto = UserLoanMapper.toDto(loan);
 
         // Then
         assertThat(dto.id()).isEqualTo(11L);

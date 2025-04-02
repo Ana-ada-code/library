@@ -6,9 +6,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pl.adamik.library.components.book.dto.BookDto;
-import pl.adamik.library.components.book.dto.BookLoanHistoryDto;
+import pl.adamik.library.components.book.dto.BookLoanDto;
 import pl.adamik.library.components.book.exeption.BookNotFoundException;
-import pl.adamik.library.components.loanHistory.LoanHistory;
+import pl.adamik.library.components.loan.Loan;
 import pl.adamik.library.components.user.User;
 import pl.adamik.library.components.user.UserRepository;
 
@@ -236,7 +236,7 @@ class BookServiceTest {
     }
 
     @Test
-    void shouldReturnBookLoanHistories_whenBookExists() {
+    void shouldReturnBookLoan_whenBookExists() {
         // Given
         Long bookId = 1L;
         Long userId = 1L;
@@ -247,24 +247,24 @@ class BookServiceTest {
         user.setLastName("Doe");
         user.setPesel("12345678901");
 
-        LoanHistory loan1 = new LoanHistory(10L, LocalDate.of(2024, 1, 10), LocalDate.of(2024, 1, 20), user, null);
-        LoanHistory loan2 = new LoanHistory(11L, LocalDate.of(2024, 2, 5), null, user, null);
+        Loan loan1 = new Loan(10L, LocalDate.of(2024, 1, 10), LocalDate.of(2024, 1, 20), user, null);
+        Loan loan2 = new Loan(11L, LocalDate.of(2024, 2, 5), null, user, null);
 
         Book book = new Book();
         book.setId(bookId);
         book.setTitle("Dune");
         book.setAuthor("Frank Herbert");
         book.setIsbn("9780441013593");
-        book.setLoanHistories(List.of(loan1, loan2));
+        book.setLoans(List.of(loan1, loan2));
 
         when(bookRepository.findById(bookId)).thenReturn(Optional.of(book));
 
-        List<BookLoanHistoryDto> expectedDtos = book.getLoanHistories().stream()
-                .map(BookLoanHistoryMapper::toDto)
+        List<BookLoanDto> expectedDtos = book.getLoans().stream()
+                .map(BookLoanMapper::toDto)
                 .collect(Collectors.toList());
 
         // When
-        List<BookLoanHistoryDto> result = bookService.getBookLoanHistories(bookId);
+        List<BookLoanDto> result = bookService.getBookLoans(bookId);
 
         // Then
         assertThat(result).hasSize(2);
@@ -280,7 +280,7 @@ class BookServiceTest {
         when(bookRepository.findById(bookId)).thenReturn(Optional.empty());
 
         // When & Then
-        assertThatThrownBy(() -> bookService.getBookLoanHistories(bookId))
+        assertThatThrownBy(() -> bookService.getBookLoans(bookId))
                 .isInstanceOf(BookNotFoundException.class);
 
         verify(bookRepository, times(1)).findById(bookId);
@@ -295,12 +295,12 @@ class BookServiceTest {
         book.setTitle("1984");
         book.setAuthor("George Orwell");
         book.setIsbn("9780451524935");
-        book.setLoanHistories(List.of());
+        book.setLoans(List.of());
 
         when(bookRepository.findById(bookId)).thenReturn(Optional.of(book));
 
         // When
-        List<BookLoanHistoryDto> result = bookService.getBookLoanHistories(bookId);
+        List<BookLoanDto> result = bookService.getBookLoans(bookId);
 
         // Then
         assertThat(result).isEmpty();

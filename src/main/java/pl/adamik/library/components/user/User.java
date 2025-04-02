@@ -2,7 +2,7 @@ package pl.adamik.library.components.user;
 
 import jakarta.persistence.*;
 import lombok.*;
-import pl.adamik.library.components.loanHistory.LoanHistory;
+import pl.adamik.library.components.loan.Loan;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,5 +24,5 @@ public class User {
     private String pesel;
     @Builder.Default
     @OneToMany(mappedBy = "user")
-    private List<LoanHistory> loanHistories = new ArrayList<>();
+    private List<Loan> loans = new ArrayList<>();
 }

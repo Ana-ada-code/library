@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pl.adamik.library.components.book.dto.BookDto;
-import pl.adamik.library.components.book.dto.BookLoanHistoryDto;
+import pl.adamik.library.components.book.dto.BookLoanDto;
 
 import java.net.URI;
 import java.util.List;
@@ -67,8 +67,8 @@ public class BookResource {
         return ResponseEntity.ok(updatedBook);
     }
 
-    @GetMapping("/{id}/loan-histories")
-    public List<BookLoanHistoryDto> getAssetAssignments(@PathVariable Long id) {
-        return bookService.getBookLoanHistories(id);
+    @GetMapping("/{id}/loans")
+    public List<BookLoanDto> getAssetAssignments(@PathVariable Long id) {
+        return bookService.getBookLoans(id);
     }
 }

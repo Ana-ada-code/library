@@ -1,20 +1,20 @@
-package pl.adamik.library.components.loanHistory;
+package pl.adamik.library.components.loan;
 
 import org.junit.jupiter.api.Test;
 import pl.adamik.library.components.book.Book;
-import pl.adamik.library.components.loanHistory.dto.LoanHistoryDto;
+import pl.adamik.library.components.loan.dto.LoanDto;
 import pl.adamik.library.components.user.User;
 
 import java.time.LocalDate;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-class LoanHistoryMapperTest {
+class LoanMapperTest {
 
     @Test
-    void shouldMapLoanHistoryToDtoCorrectly() {
+    void shouldMapLoanToDtoCorrectly() {
         // Given
-        Long loanHistoryId = 1L;
+        Long loanId = 1L;
         LocalDate startDate = LocalDate.of(2024, 1, 10);
         LocalDate endDate = LocalDate.of(2024, 1, 20);
         Long userId = 2L;
@@ -30,13 +30,13 @@ class LoanHistoryMapperTest {
         book.setTitle("Dune");
         book.setAuthor("Frank Herbert");
         book.setIsbn("9780441013593");
-        LoanHistory loanHistory = new LoanHistory(loanHistoryId, startDate, endDate, user, book);
+        Loan loan = new Loan(loanId, startDate, endDate, user, book);
 
         // When
-        LoanHistoryDto result = LoanHistoryMapper.toDto(loanHistory);
+        LoanDto result = LoanMapper.toDto(loan);
 
         // Then
-        assertThat(result.id()).isEqualTo(loanHistoryId);
+        assertThat(result.id()).isEqualTo(loanId);
         assertThat(result.startDate()).isEqualTo(startDate);
         assertThat(result.endDate()).isEqualTo(endDate);
         assertThat(result.userId()).isEqualTo(userId);
@@ -44,9 +44,9 @@ class LoanHistoryMapperTest {
     }
 
     @Test
-    void shouldMapLoanHistoryWithNullValues() {
+    void shouldMapLoanWithNullValues() {
         // Given
-        Long loanHistoryId = 2L;
+        Long loanId = 2L;
         LocalDate startDate = LocalDate.of(2024, 2, 5);
         LocalDate endDate = null;
 
@@ -56,13 +56,13 @@ class LoanHistoryMapperTest {
         book.setTitle("1984");
         book.setAuthor("George Orwell");
         book.setIsbn("9780451524935");
-        LoanHistory loanHistory = new LoanHistory(loanHistoryId, startDate, endDate, user, book);
+        Loan loan = new Loan(loanId, startDate, endDate, user, book);
 
         // When
-        LoanHistoryDto result = LoanHistoryMapper.toDto(loanHistory);
+        LoanDto result = LoanMapper.toDto(loan);
 
         // Then
-        assertThat(result.id()).isEqualTo(loanHistoryId);
+        assertThat(result.id()).isEqualTo(loanId);
         assertThat(result.startDate()).isEqualTo(startDate);
         assertThat(result.endDate()).isNull();
         assertThat(result.userId()).isEqualTo(user.getId());

@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pl.adamik.library.components.user.dto.UserDto;
-import pl.adamik.library.components.user.dto.UserLoanHistoryDto;
+import pl.adamik.library.components.user.dto.UserLoanDto;
 
 import java.net.URI;
 import java.util.List;
@@ -65,8 +65,8 @@ public class UserResource {
         return ResponseEntity.ok(updatedUser);
     }
 
-    @GetMapping("/{id}/loan-histories")
-    public List<UserLoanHistoryDto> getUserLoanHistories(@PathVariable Long id) {
-        return userService.getUserLoanHistories(id);
+    @GetMapping("/{id}/loans")
+    public List<UserLoanDto> getUserLoans(@PathVariable Long id) {
+        return userService.getUserLoans(id);
     }
 }

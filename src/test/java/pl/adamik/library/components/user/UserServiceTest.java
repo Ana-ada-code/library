@@ -6,9 +6,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pl.adamik.library.components.book.Book;
-import pl.adamik.library.components.loanHistory.LoanHistory;
+import pl.adamik.library.components.loan.Loan;
 import pl.adamik.library.components.user.dto.UserDto;
-import pl.adamik.library.components.user.dto.UserLoanHistoryDto;
+import pl.adamik.library.components.user.dto.UserLoanDto;
 import pl.adamik.library.components.user.exeption.DuplicatePeselException;
 import pl.adamik.library.components.user.exeption.UserNotFoundException;
 
@@ -266,7 +266,7 @@ class UserServiceTest {
     }
 
     @Test
-    void shouldReturnUserLoanHistories_whenUserExists() {
+    void shouldReturnUserLoans_whenUserExists() {
         // Given
         Long userId = 1L;
         Book book1 = new Book();
@@ -280,25 +280,25 @@ class UserServiceTest {
         book2.setAuthor("George Orwell");
         book2.setIsbn("9780451524935");
 
-        LoanHistory loan1 = new LoanHistory(10L, LocalDate.of(2024, 1, 10), LocalDate.of(2024, 1, 20), null, book1);
-        LoanHistory loan2 = new LoanHistory(11L, LocalDate.of(2024, 2, 5), null, null, book2);
+        Loan loan1 = new Loan(10L, LocalDate.of(2024, 1, 10), LocalDate.of(2024, 1, 20), null, book1);
+        Loan loan2 = new Loan(11L, LocalDate.of(2024, 2, 5), null, null, book2);
 
         User user = User.builder()
                 .id(userId)
                 .firstName("John")
                 .lastName("Doe")
                 .pesel("12345678901")
-                .loanHistories(List.of(loan1, loan2))
+                .loans(List.of(loan1, loan2))
                 .build();
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
 
-        List<UserLoanHistoryDto> expectedDtos = user.getLoanHistories().stream()
-                .map(UserLoanHistoryMapper::toDto)
+        List<UserLoanDto> expectedDtos = user.getLoans().stream()
+                .map(UserLoanMapper::toDto)
                 .collect(Collectors.toList());
 
         // When
-        List<UserLoanHistoryDto> result = userService.getUserLoanHistories(userId);
+        List<UserLoanDto> result = userService.getUserLoans(userId);
 
         // Then
         assertThat(result).hasSize(2);
@@ -314,14 +314,14 @@ class UserServiceTest {
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
         // When & Then
-        assertThatThrownBy(() -> userService.getUserLoanHistories(userId))
+        assertThatThrownBy(() -> userService.getUserLoans(userId))
                 .isInstanceOf(UserNotFoundException.class);
 
         verify(userRepository, times(1)).findById(userId);
     }
 
     @Test
-    void shouldReturnEmptyList_whenUserHasNoLoanHistories() {
+    void shouldReturnEmptyList_whenUserHasNoLoans() {
         // Given
         Long userId = 2L;
         User user = User.builder()
@@ -329,13 +329,13 @@ class UserServiceTest {
                 .firstName("Jane")
                 .lastName("Doe")
                 .pesel("98765432109")
-                .loanHistories(List.of())
+                .loans(List.of())
                 .build();
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
 
         // When
-        List<UserLoanHistoryDto> result = userService.getUserLoanHistories(userId);
+        List<UserLoanDto> result = userService.getUserLoans(userId);
 
         // Then
         assertThat(result).isEmpty();

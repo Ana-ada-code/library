@@ -3,7 +3,7 @@ package pl.adamik.library.components.book;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.adamik.library.components.book.dto.BookDto;
-import pl.adamik.library.components.book.dto.BookLoanHistoryDto;
+import pl.adamik.library.components.book.dto.BookLoanDto;
 import pl.adamik.library.components.book.exeption.BookNotFoundException;
 
 import java.util.List;
@@ -46,12 +46,12 @@ public class BookService {
         return bookMapper.toDto(savedBook);
     }
 
-    List<BookLoanHistoryDto> getBookLoanHistories(Long id) {
+    List<BookLoanDto> getBookLoans(Long id) {
         return bookRepository.findById(id)
-                .map(Book::getLoanHistories)
+                .map(Book::getLoans)
                 .orElseThrow(BookNotFoundException::new)
                 .stream()
-                .map(BookLoanHistoryMapper::toDto)
+                .map(BookLoanMapper::toDto)
                 .collect(Collectors.toList());
     }
 }

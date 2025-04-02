@@ -2,7 +2,7 @@ package pl.adamik.library.components.book.dto;
 
 import java.time.LocalDate;
 
-public record BookLoanHistoryDto (
+public record BookLoanDto(
         Long id,
         LocalDate startDate,
         LocalDate endDate,
