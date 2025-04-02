@@ -269,8 +269,16 @@ class UserServiceTest {
     void shouldReturnUserLoanHistories_whenUserExists() {
         // Given
         Long userId = 1L;
-        Book book1 = new Book(1L, "Dune", "Frank Herbert", "9780441013593", null);
-        Book book2 = new Book(2L, "1984", "George Orwell", "9780451524935", null);
+        Book book1 = new Book();
+        book1.setId(1L);
+        book1.setTitle("Dune");
+        book1.setAuthor("Frank Herbert");
+        book1.setIsbn("9780441013593");
+        Book book2 = new Book();
+        book2.setId(2L);
+        book2.setTitle("1984");
+        book2.setAuthor("George Orwell");
+        book2.setIsbn("9780451524935");
 
         LoanHistory loan1 = new LoanHistory(10L, LocalDate.of(2024, 1, 10), LocalDate.of(2024, 1, 20), null, book1);
         LoanHistory loan2 = new LoanHistory(11L, LocalDate.of(2024, 2, 5), null, null, book2);

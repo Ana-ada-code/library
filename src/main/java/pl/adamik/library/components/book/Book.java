@@ -3,6 +3,10 @@ package pl.adamik.library.components.book;
 import jakarta.persistence.*;
 import lombok.*;
 import pl.adamik.library.components.genre.Genre;
+import pl.adamik.library.components.loanHistory.LoanHistory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -20,4 +24,7 @@ public class Book {
     @ManyToOne
     @JoinColumn(name = "genre_id", referencedColumnName = "id")
     private Genre genre;
+    @Builder.Default
+    @OneToMany(mappedBy = "book")
+    private List<LoanHistory> loanHistories = new ArrayList<>();
 }

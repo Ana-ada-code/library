@@ -14,7 +14,11 @@ class UserLoanHistoryMapperTest {
     @Test
     void shouldMapLoanHistoryToDto() {
         // Given
-        Book book = new Book(1L, "Dune", "Frank Herbert", "9780441013593", null);
+        Book book = new Book();
+        book.setId(1L);
+        book.setTitle("Dune");
+        book.setAuthor("Frank Herbert");
+        book.setIsbn("9780441013593");
         LoanHistory loanHistory = new LoanHistory(10L, LocalDate.of(2024, 1, 10), LocalDate.of(2024, 1, 20), null, book);
 
         // When
@@ -33,7 +37,11 @@ class UserLoanHistoryMapperTest {
     @Test
     void shouldHandleNullEndDate() {
         // Given
-        Book book = new Book(2L, "1984", "George Orwell", "9780451524935", null);
+        Book book = new Book();
+        book.setId(2L);
+        book.setTitle("1984");
+        book.setAuthor("George Orwell");
+        book.setIsbn("9780451524935");
         LoanHistory loanHistory = new LoanHistory(11L, LocalDate.of(2024, 2, 5), null, null, book);
 
         // When

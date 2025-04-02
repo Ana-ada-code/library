@@ -6,10 +6,17 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pl.adamik.library.components.book.dto.BookDto;
+import pl.adamik.library.components.book.dto.BookLoanHistoryDto;
+import pl.adamik.library.components.book.exeption.BookNotFoundException;
+import pl.adamik.library.components.loanHistory.LoanHistory;
+import pl.adamik.library.components.user.User;
+import pl.adamik.library.components.user.UserRepository;
 
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
@@ -22,6 +29,9 @@ class BookServiceTest {
     private BookRepository bookRepository;
 
     @Mock
+    private UserRepository userRepository;
+
+    @Mock
     private BookMapper bookMapper;
 
     @InjectMocks
@@ -30,8 +40,15 @@ class BookServiceTest {
     @Test
     void shouldReturnAllBooks_whenBooksExist() {
         // Given
-        Book book1 = new Book(1L, "Harry Potter", "J.K. Rowling", "9780747532743", null);
-        Book book2 = new Book(2L, "Dune", "Frank Herbert", "9780441013593", null);
+        Book book1 = new Book();
+        book1.setId(1L);
+        book1.setTitle("Harry Potter");
+        book1.setAuthor("J.K. Rowling");
+        book1.setIsbn("9780747532743");
+        Book book2 = new Book();
+        book2.setId(2L);
+        book2.setTitle("Frank Herbert");
+        book2.setIsbn("9780441013593");
 
         BookDto bookDto1 = new BookDto(1L, "Harry Potter", "J.K. Rowling", "9780747532743", null);
         BookDto bookDto2 = new BookDto(2L, "Dune", "Frank Herbert", "9780441013593", null);
@@ -73,8 +90,15 @@ class BookServiceTest {
         // Given
         String searchText = "Harry Potter";
 
-        Book book1 = new Book(1L, "Harry Potter and the Sorcerer’s Stone", "J.K. Rowling", "9780747532743", null);
-        Book book2 = new Book(2L, "Fantastic Beasts", "J.K. Rowling", "9781338216790", null);
+        Book book1 = new Book();
+        book1.setId(1L);
+        book1.setTitle("Harry Potter and the Sorcerer’s Stone");
+        book1.setAuthor("J.K. Rowling");
+        book1.setIsbn("9780747532743");
+        Book book2 = new Book();
+        book2.setId(2L);
+        book2.setTitle("J.K. Rowling");
+        book2.setIsbn("9781338216790");
 
         BookDto bookDto1 = new BookDto(1L, "Harry Potter and the Sorcerer’s Stone", "J.K. Rowling", "9780747532743", null);
         BookDto bookDto2 = new BookDto(2L, "Fantastic Beasts", "J.K. Rowling", "9781338216790", null);
@@ -115,8 +139,15 @@ class BookServiceTest {
     void shouldSaveBookSuccessfully() {
         // Given
         BookDto bookDto = new BookDto(null, "Testowy Tytuł", "Testowy Autor", "123456789", "Fantasy");
-        Book bookEntity = new Book(null, "Testowy Tytuł", "Testowy Autor", "123456789", null);
-        Book savedBookEntity = new Book(1L, "Testowy Tytuł", "Testowy Autor", "123456789", null);
+        Book bookEntity = new Book();
+        bookEntity.setTitle("Testowy Tytuł");
+        bookEntity.setAuthor("Testowy Autor");
+        bookEntity.setIsbn("123456789");
+        Book savedBookEntity = new Book();
+        savedBookEntity.setId(1L);
+        bookEntity.setTitle("Testowy Tytuł");
+        bookEntity.setAuthor("Testowy Autor");
+        savedBookEntity.setIsbn("123456789");
         BookDto expectedDto = new BookDto(1L, "Testowy Tytuł", "Testowy Autor", "123456789", "Fantasy");
 
         when(bookMapper.toEntity(bookDto)).thenReturn(bookEntity);
@@ -143,7 +174,10 @@ class BookServiceTest {
     void shouldThrowException_whenSavingFails() {
         // Given
         BookDto bookDto = new BookDto(null, "Testowy Tytuł", "Testowy Autor", "123456789", "Fantasy");
-        Book bookEntity = new Book(null, "Testowy Tytuł", "Testowy Autor", "123456789", null);
+        Book bookEntity = new Book();
+        bookEntity.setTitle("Testowy Tytuł");
+        bookEntity.setAuthor("Testowy Autor");
+        bookEntity.setIsbn("123456789");
 
         when(bookMapper.toEntity(bookDto)).thenReturn(bookEntity);
         when(bookRepository.save(bookEntity)).thenThrow(new RuntimeException("Błąd zapisu w bazie"));
@@ -162,7 +196,11 @@ class BookServiceTest {
     void shouldReturnBookDto_whenBookExists() {
         // Given
         Long bookId = 1L;
-        Book bookEntity = new Book(bookId, "Harry Potter", "J.K. Rowling", "9780747532743", null);
+        Book bookEntity = new Book();
+        bookEntity.setId(bookId);
+        bookEntity.setTitle("Harry Potter");
+        bookEntity.setAuthor("J.K. Rowling");
+        bookEntity.setIsbn("9780747532743");
         BookDto expectedDto = new BookDto(bookId, "Harry Potter", "J.K. Rowling", "9780747532743", "Fantasy");
 
         when(bookRepository.findById(bookId)).thenReturn(Optional.of(bookEntity));
@@ -195,5 +233,78 @@ class BookServiceTest {
 
         verify(bookRepository, times(1)).findById(bookId);
         verify(bookMapper, never()).toDto(any());
+    }
+
+    @Test
+    void shouldReturnBookLoanHistories_whenBookExists() {
+        // Given
+        Long bookId = 1L;
+        Long userId = 1L;
+
+        User user = new User();
+        user.setId(userId);
+        user.setFirstName("John");
+        user.setLastName("Doe");
+        user.setPesel("12345678901");
+
+        LoanHistory loan1 = new LoanHistory(10L, LocalDate.of(2024, 1, 10), LocalDate.of(2024, 1, 20), user, null);
+        LoanHistory loan2 = new LoanHistory(11L, LocalDate.of(2024, 2, 5), null, user, null);
+
+        Book book = new Book();
+        book.setId(bookId);
+        book.setTitle("Dune");
+        book.setAuthor("Frank Herbert");
+        book.setIsbn("9780441013593");
+        book.setLoanHistories(List.of(loan1, loan2));
+
+        when(bookRepository.findById(bookId)).thenReturn(Optional.of(book));
+
+        List<BookLoanHistoryDto> expectedDtos = book.getLoanHistories().stream()
+                .map(BookLoanHistoryMapper::toDto)
+                .collect(Collectors.toList());
+
+        // When
+        List<BookLoanHistoryDto> result = bookService.getBookLoanHistories(bookId);
+
+        // Then
+        assertThat(result).hasSize(2);
+        assertThat(result).containsExactlyElementsOf(expectedDtos);
+
+        verify(bookRepository, times(1)).findById(bookId);
+    }
+
+    @Test
+    void shouldThrowException_whenBookNotFound() {
+        // Given
+        Long bookId = 99L;
+        when(bookRepository.findById(bookId)).thenReturn(Optional.empty());
+
+        // When & Then
+        assertThatThrownBy(() -> bookService.getBookLoanHistories(bookId))
+                .isInstanceOf(BookNotFoundException.class);
+
+        verify(bookRepository, times(1)).findById(bookId);
+    }
+
+    @Test
+    void shouldReturnEmptyList_whenBookHasNoLoanHistories() {
+        // Given
+        Long bookId = 2L;
+        Book book = new Book();
+        book.setId(bookId);
+        book.setTitle("1984");
+        book.setAuthor("George Orwell");
+        book.setIsbn("9780451524935");
+        book.setLoanHistories(List.of());
+
+        when(bookRepository.findById(bookId)).thenReturn(Optional.of(book));
+
+        // When
+        List<BookLoanHistoryDto> result = bookService.getBookLoanHistories(bookId);
+
+        // Then
+        assertThat(result).isEmpty();
+
+        verify(bookRepository, times(1)).findById(bookId);
     }
 }
