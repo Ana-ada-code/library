@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pl.adamik.library.components.user.dto.UserDto;
+import pl.adamik.library.components.user.dto.UserLoanHistoryDto;
 
 import java.net.URI;
 import java.util.List;
@@ -30,7 +31,7 @@ public class UserResource {
 
     @PostMapping("")
     public ResponseEntity<UserDto> save(@RequestBody UserDto user) {
-        if (user.getId() != null) {
+        if (user.id() != null) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
                     "Zapisywany obiekt nie może mieć ustawionego id"
@@ -40,7 +41,7 @@ public class UserResource {
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(savedUser.getId())
+                .buildAndExpand(savedUser.id())
                 .toUri();
         return ResponseEntity.created(location).body(savedUser);
     }
@@ -54,7 +55,7 @@ public class UserResource {
 
     @PutMapping("/{id}")
     public ResponseEntity<UserDto> update(@PathVariable Long id, @RequestBody UserDto user) {
-        if (!id.equals(user.getId())) {
+        if (!id.equals(user.id())) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
                     "Aktualizowany obiekt musi mieć id zgodne z id w ścieżce zasobu"
@@ -62,5 +63,10 @@ public class UserResource {
         }
         UserDto updatedUser = userService.update(user);
         return ResponseEntity.ok(updatedUser);
+    }
+
+    @GetMapping("/{id}/loan-histories")
+    public List<UserLoanHistoryDto> getUserLoanHistories(@PathVariable Long id) {
+        return userService.getUserLoanHistories(id);
     }
 }

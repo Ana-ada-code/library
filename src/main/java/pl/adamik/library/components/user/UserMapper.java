@@ -4,20 +4,20 @@ import pl.adamik.library.components.user.dto.UserDto;
 
 public class UserMapper {
     static UserDto toDto(User user) {
-        UserDto dto = new UserDto();
-        dto.setId(user.getId());
-        dto.setFirstName(user.getFirstName());
-        dto.setLastName(user.getLastName());
-        dto.setPesel(user.getPesel());
-        return dto;
+        return new UserDto(
+                user.getId(),
+                user.getFirstName(),
+                user.getLastName(),
+                user.getPesel()
+        );
     }
 
     static User toEntity(UserDto user) {
         User entity = new User();
-        entity.setId(user.getId());
-        entity.setFirstName(user.getFirstName());
-        entity.setLastName(user.getLastName());
-        entity.setPesel(user.getPesel());
+        entity.setId(user.id());
+        entity.setFirstName(user.firstName());
+        entity.setLastName(user.lastName());
+        entity.setPesel(user.pesel());
         return entity;
     }
 }

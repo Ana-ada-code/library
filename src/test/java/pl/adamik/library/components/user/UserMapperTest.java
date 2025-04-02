@@ -21,30 +21,26 @@ class UserMapperTest {
 
         // Then
         assertThat(userDto).isNotNull();
-        assertThat(userDto.getId()).isEqualTo(user.getId());
-        assertThat(userDto.getFirstName()).isEqualTo(user.getFirstName());
-        assertThat(userDto.getLastName()).isEqualTo(user.getLastName());
-        assertThat(userDto.getPesel()).isEqualTo(user.getPesel());
+        assertThat(userDto.id()).isEqualTo(user.getId());
+        assertThat(userDto.firstName()).isEqualTo(user.getFirstName());
+        assertThat(userDto.lastName()).isEqualTo(user.getLastName());
+        assertThat(userDto.pesel()).isEqualTo(user.getPesel());
     }
 
     @Test
     void shouldMapUserDtoToUser() {
         // Given
-        UserDto userDto = new UserDto();
-        userDto.setId(2L);
-        userDto.setFirstName("Anna");
-        userDto.setLastName("Nowak");
-        userDto.setPesel("09876543210");
+        UserDto userDto = new UserDto(2L, "Anna", "Nowak", "09876543210");
 
         // When
         User user = UserMapper.toEntity(userDto);
 
         // Then
         assertThat(user).isNotNull();
-        assertThat(user.getId()).isEqualTo(userDto.getId());
-        assertThat(user.getFirstName()).isEqualTo(userDto.getFirstName());
-        assertThat(user.getLastName()).isEqualTo(userDto.getLastName());
-        assertThat(user.getPesel()).isEqualTo(userDto.getPesel());
+        assertThat(user.getId()).isEqualTo(userDto.id());
+        assertThat(user.getFirstName()).isEqualTo(userDto.firstName());
+        assertThat(user.getLastName()).isEqualTo(userDto.lastName());
+        assertThat(user.getPesel()).isEqualTo(userDto.pesel());
     }
 
 }

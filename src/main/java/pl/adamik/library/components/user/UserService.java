@@ -3,7 +3,9 @@ package pl.adamik.library.components.user;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.adamik.library.components.user.dto.UserDto;
+import pl.adamik.library.components.user.dto.UserLoanHistoryDto;
 import pl.adamik.library.components.user.exeption.DuplicatePeselException;
+import pl.adamik.library.components.user.exeption.UserNotFoundException;
 
 import java.util.List;
 import java.util.Optional;
@@ -38,7 +40,7 @@ class UserService {
 
     @Transactional
     UserDto save(UserDto user) {
-        Optional<User> userByPesel = userRepository.findByPesel(user.getPesel());
+        Optional<User> userByPesel = userRepository.findByPesel(user.pesel());
         userByPesel.ifPresent(u -> {
             throw new DuplicatePeselException();
         });
@@ -47,9 +49,9 @@ class UserService {
 
     @Transactional
     UserDto update(UserDto user) {
-        Optional<User> userByPesel = userRepository.findByPesel(user.getPesel());
+        Optional<User> userByPesel = userRepository.findByPesel(user.pesel());
         userByPesel.ifPresent(u -> {
-            if (!u.getId().equals(user.getId())) {
+            if (!u.getId().equals(user.id())) {
                 throw new DuplicatePeselException();
             }
         });
@@ -60,5 +62,14 @@ class UserService {
         User userEntity = UserMapper.toEntity(user);
         User savedUser = userRepository.save(userEntity);
         return UserMapper.toDto(savedUser);
+    }
+
+    List<UserLoanHistoryDto> getUserLoanHistories(Long userId) {
+        return userRepository.findById(userId)
+                .map(User::getLoanHistories)
+                .orElseThrow(UserNotFoundException::new)
+                .stream()
+                .map(UserLoanHistoryMapper::toDto)
+                .collect(Collectors.toList());
     }
 }

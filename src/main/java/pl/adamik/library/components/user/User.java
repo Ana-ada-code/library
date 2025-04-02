@@ -2,8 +2,10 @@ package pl.adamik.library.components.user;
 
 import jakarta.persistence.*;
 import lombok.*;
+import pl.adamik.library.components.loanHistory.LoanHistory;
 
-import java.util.Objects;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -20,20 +22,7 @@ public class User {
     private String lastName;
     @Column(unique = true)
     private String pesel;
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return Objects.equals(id, user.id) &&
-                Objects.equals(firstName, user.firstName) &&
-                Objects.equals(lastName, user.lastName) &&
-                Objects.equals(pesel, user.pesel);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, firstName, lastName, pesel);
-    }
+    @Builder.Default
+    @OneToMany(mappedBy = "user")
+    private List<LoanHistory> loanHistories = new ArrayList<>();
 }

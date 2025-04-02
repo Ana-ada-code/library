@@ -8,9 +8,11 @@
     <include file="0001_create_table_users.xml" relativeToChangelogFile="true"/>
     <include file="0002_create_table_genre.xml" relativeToChangelogFile="true"/>
     <include file="0003_create_table_book.xml" relativeToChangelogFile="true"/>
+    <include file="0004_create_table_loan_history.xml" relativeToChangelogFile="true"/>
 
     <include file="../testdata/0001_users.sql" relativeToChangelogFile="true" context="dev"/>
     <include file="../testdata/0002_genres.sql" relativeToChangelogFile="true" context="dev"/>
     <include file="../testdata/0003_books.sql" relativeToChangelogFile="true" context="dev"/>
+    <include file="../testdata/0004_loan_histories.sql" relativeToChangelogFile="true" context="dev"/>
 
 </databaseChangeLog>

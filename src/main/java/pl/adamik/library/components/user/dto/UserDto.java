@@ -1,13 +1,8 @@
 package pl.adamik.library.components.user.dto;
 
-import lombok.Getter;
-import lombok.Setter;
-
-@Getter
-@Setter
-public class UserDto {
-    private Long id;
-    private String firstName;
-    private String lastName;
-    private String pesel;
+public record UserDto(
+        Long id,
+        String firstName,
+        String lastName,
+        String pesel) {
 }
