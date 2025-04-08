@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import pl.adamik.library.components.book.dto.BookDetails;
 import pl.adamik.library.components.book.dto.BookDto;
 import pl.adamik.library.components.book.dto.BookLoanDto;
 
@@ -56,7 +57,7 @@ public class BookResource {
 
     @PutMapping("/{id}")
     public ResponseEntity<BookDto> update(@PathVariable Long id,
-                                           @RequestBody BookDto book) {
+                                          @RequestBody BookDto book) {
         if (!id.equals(book.id())) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
@@ -71,4 +72,10 @@ public class BookResource {
     public List<BookLoanDto> getAssetAssignments(@PathVariable Long id) {
         return bookService.getBookLoans(id);
     }
+
+    @GetMapping("/details/{isbn}")
+    public BookDetails getBookDetails(@PathVariable String isbn) {
+        return bookService.getBookDetails(isbn);
+    }
+
 }

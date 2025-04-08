@@ -1,11 +1,17 @@
 package pl.adamik.library.components.book;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
+import pl.adamik.library.components.book.dto.BookDetails;
 import pl.adamik.library.components.book.dto.BookDto;
 import pl.adamik.library.components.book.dto.BookLoanDto;
 import pl.adamik.library.components.book.exeption.BookNotFoundException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -15,10 +21,14 @@ public class BookService {
 
     private final BookRepository bookRepository;
     private final BookMapper bookMapper;
+    private final RestTemplate restTemplate;
+    private final ObjectMapper objectMapper;
 
-    public BookService(BookRepository bookRepository, BookMapper bookMapper) {
+    public BookService(BookRepository bookRepository, BookMapper bookMapper, RestTemplate restTemplate, ObjectMapper objectMapper) {
         this.bookRepository = bookRepository;
         this.bookMapper = bookMapper;
+        this.restTemplate = restTemplate;
+        this.objectMapper = objectMapper;
     }
 
     List<BookDto> findAll() {
@@ -54,4 +64,35 @@ public class BookService {
                 .map(BookLoanMapper::toDto)
                 .collect(Collectors.toList());
     }
+
+    public BookDetails getBookDetails(String isbn) {
+        String url = UriComponentsBuilder.fromHttpUrl("https://openlibrary.org/api/books")
+                .queryParam("bibkeys", "ISBN:{isbn}")
+                .queryParam("format", "json")
+                .queryParam("jscmd", "data")
+                .buildAndExpand(isbn)
+                .toUriString();
+
+        String jsonResponse = restTemplate.getForObject(url, String.class);
+
+        try {
+            JsonNode rootNode = objectMapper.readTree(jsonResponse);
+            JsonNode bookNode = rootNode.path("ISBN:" + isbn);
+
+            int numberOfPages = bookNode.path("number_of_pages").asInt(0);
+            String coverImage = bookNode.path("cover").path("large").asText("");
+            String publishDate = bookNode.path("publish_date").asText("");
+
+            List<String> publishers = new ArrayList<>();
+            for (JsonNode publisherNode : bookNode.path("publishers")) {
+                publishers.add(publisherNode.path("name").asText());
+            }
+
+            return new BookDetails(numberOfPages, coverImage, publishDate, publishers);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new BookDetails(0, "", "", new ArrayList<>());
+        }
+    }
+
 }
