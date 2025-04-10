@@ -41,11 +41,11 @@ class BookMapperTest {
 
         // Then
         assertThat(result).isNotNull();
-        assertThat(result.id()).isEqualTo(1L);
-        assertThat(result.title()).isEqualTo("Harry Potter");
-        assertThat(result.author()).isEqualTo("J.K. Rowling");
-        assertThat(result.isbn()).isEqualTo("9780747532743");
-        assertThat(result.genre()).isEqualTo("Fantasy");
+        assertThat(result.getId()).isEqualTo(1L);
+        assertThat(result.getTitle()).isEqualTo("Harry Potter");
+        assertThat(result.getAuthor()).isEqualTo("J.K. Rowling");
+        assertThat(result.getIsbn()).isEqualTo("9780747532743");
+        assertThat(result.getGenre()).isEqualTo("Fantasy");
     }
 
     @Test
@@ -63,11 +63,11 @@ class BookMapperTest {
 
         // Then
         assertThat(result).isNotNull();
-        assertThat(result.id()).isEqualTo(2L);
-        assertThat(result.title()).isEqualTo("1984");
-        assertThat(result.author()).isEqualTo("George Orwell");
-        assertThat(result.isbn()).isEqualTo("9780451524935");
-        assertThat(result.genre()).isNull();
+        assertThat(result.getId()).isEqualTo(2L);
+        assertThat(result.getTitle()).isEqualTo("1984");
+        assertThat(result.getAuthor()).isEqualTo("George Orwell");
+        assertThat(result.getIsbn()).isEqualTo("9780451524935");
+        assertThat(result.getGenre()).isNull();
     }
 
     @Test

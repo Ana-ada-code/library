@@ -159,11 +159,11 @@ class BookServiceTest {
 
         // Then
         assertThat(result).isEqualTo(expectedDto);
-        assertThat(result.id()).isEqualTo(1L);
-        assertThat(result.title()).isEqualTo("Testowy Tytuł");
-        assertThat(result.author()).isEqualTo("Testowy Autor");
-        assertThat(result.isbn()).isEqualTo("123456789");
-        assertThat(result.genre()).isEqualTo("Fantasy");
+        assertThat(result.getId()).isEqualTo(1L);
+        assertThat(result.getTitle()).isEqualTo("Testowy Tytuł");
+        assertThat(result.getAuthor()).isEqualTo("Testowy Autor");
+        assertThat(result.getIsbn()).isEqualTo("123456789");
+        assertThat(result.getGenre()).isEqualTo("Fantasy");
 
         verify(bookMapper, times(1)).toEntity(bookDto);
         verify(bookRepository, times(1)).save(bookEntity);
@@ -212,8 +212,8 @@ class BookServiceTest {
         // Then
         assertThat(result).isPresent();
         assertThat(result.get()).isEqualTo(expectedDto);
-        assertThat(result.get().id()).isEqualTo(bookId);
-        assertThat(result.get().title()).isEqualTo("Harry Potter");
+        assertThat(result.get().getId()).isEqualTo(bookId);
+        assertThat(result.get().getTitle()).isEqualTo("Harry Potter");
 
         verify(bookRepository, times(1)).findById(bookId);
         verify(bookMapper, times(1)).toDto(bookEntity);

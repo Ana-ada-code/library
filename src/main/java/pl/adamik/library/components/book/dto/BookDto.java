@@ -1,9 +1,14 @@
 package pl.adamik.library.components.book.dto;
 
-public record BookDto(
-        Long id,
-        String title,
-        String author,
-        String isbn,
-        String genre) {
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor
+public class BookDto {
+        private Long id;
+        private String title;
+        private String author;
+        private String isbn;
+        private String genre;
 }

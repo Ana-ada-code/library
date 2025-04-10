@@ -1,7 +1,9 @@
 package pl.adamik.library.components.book;
 
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -32,18 +34,23 @@ public class BookResource {
     }
 
     @PostMapping("")
-    public ResponseEntity<BookDto> save(@RequestBody BookDto book) {
-        if (book.id() != null) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<BookDto> save(@RequestBody @Valid BookDto book, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, bindingResult.getFieldError().getDefaultMessage());
+        }
+
+        if (book.getId() != null) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
-                    "Zapisywany obiekt nie może mieć ustawionego id"
+                    "The object being saved cannot have an id set"
             );
         }
         BookDto savedBook = bookService.save(book);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(savedBook.id())
+                .buildAndExpand(savedBook.getId())
                 .toUri();
         return ResponseEntity.created(location).body(savedBook);
     }
@@ -58,10 +65,10 @@ public class BookResource {
     @PutMapping("/{id}")
     public ResponseEntity<BookDto> update(@PathVariable Long id,
                                           @RequestBody BookDto book) {
-        if (!id.equals(book.id())) {
+        if (!id.equals(book.getId())) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
-                    "Aktualizowany obiekt powinien mieć id zgodne z id ścieżki zasobu"
+                    "The object being updated should have an ID matching the ID in the resource path"
             );
         }
         BookDto updatedBook = bookService.save(book);
