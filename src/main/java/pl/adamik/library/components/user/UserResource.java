@@ -1,7 +1,11 @@
 package pl.adamik.library.components.user;
 
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -10,6 +14,8 @@ import pl.adamik.library.components.user.dto.UserLoanDto;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/users")
@@ -30,20 +36,33 @@ public class UserResource {
     }
 
     @PostMapping("")
-    public ResponseEntity<UserDto> save(@RequestBody UserDto user) {
-        if (user.id() != null) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<UserDto> save(@RequestBody @Valid UserDto user, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, bindingResult.getFieldError().getDefaultMessage());
+        }
+
+        if (user.getId() != null) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
-                    "Zapisywany obiekt nie może mieć ustawionego id"
+                    "The object being saved cannot have an id set"
             );
         }
         UserDto savedUser = userService.save(user);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(savedUser.id())
+                .buildAndExpand(savedUser.getId())
                 .toUri();
         return ResponseEntity.created(location).body(savedUser);
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    Map<String, String> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+        return ex.getBindingResult().getFieldErrors()
+                .stream()
+                .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));
     }
 
     @GetMapping("/{id}")
@@ -55,10 +74,10 @@ public class UserResource {
 
     @PutMapping("/{id}")
     public ResponseEntity<UserDto> update(@PathVariable Long id, @RequestBody UserDto user) {
-        if (!id.equals(user.id())) {
+        if (!id.equals(user.getId())) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
-                    "Aktualizowany obiekt musi mieć id zgodne z id w ścieżce zasobu"
+                    "The object being updated must have an id that matches the id in the resource path"
             );
         }
         UserDto updatedUser = userService.update(user);

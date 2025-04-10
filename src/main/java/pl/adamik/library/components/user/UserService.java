@@ -40,7 +40,7 @@ class UserService {
 
     @Transactional
     UserDto save(UserDto user) {
-        Optional<User> userByPesel = userRepository.findByPesel(user.pesel());
+        Optional<User> userByPesel = userRepository.findByPesel(user.getPesel());
         userByPesel.ifPresent(u -> {
             throw new DuplicatePeselException();
         });
@@ -49,9 +49,9 @@ class UserService {
 
     @Transactional
     UserDto update(UserDto user) {
-        Optional<User> userByPesel = userRepository.findByPesel(user.pesel());
+        Optional<User> userByPesel = userRepository.findByPesel(user.getPesel());
         userByPesel.ifPresent(u -> {
-            if (!u.getId().equals(user.id())) {
+            if (!u.getId().equals(user.getId())) {
                 throw new DuplicatePeselException();
             }
         });

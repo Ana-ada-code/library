@@ -21,10 +21,10 @@ class UserMapperTest {
 
         // Then
         assertThat(userDto).isNotNull();
-        assertThat(userDto.id()).isEqualTo(user.getId());
-        assertThat(userDto.firstName()).isEqualTo(user.getFirstName());
-        assertThat(userDto.lastName()).isEqualTo(user.getLastName());
-        assertThat(userDto.pesel()).isEqualTo(user.getPesel());
+        assertThat(userDto.getId()).isEqualTo(user.getId());
+        assertThat(userDto.getFirstName()).isEqualTo(user.getFirstName());
+        assertThat(userDto.getLastName()).isEqualTo(user.getLastName());
+        assertThat(userDto.getPesel()).isEqualTo(user.getPesel());
     }
 
     @Test
@@ -37,10 +37,10 @@ class UserMapperTest {
 
         // Then
         assertThat(user).isNotNull();
-        assertThat(user.getId()).isEqualTo(userDto.id());
-        assertThat(user.getFirstName()).isEqualTo(userDto.firstName());
-        assertThat(user.getLastName()).isEqualTo(userDto.lastName());
-        assertThat(user.getPesel()).isEqualTo(userDto.pesel());
+        assertThat(user.getId()).isEqualTo(userDto.getId());
+        assertThat(user.getFirstName()).isEqualTo(userDto.getFirstName());
+        assertThat(user.getLastName()).isEqualTo(userDto.getLastName());
+        assertThat(user.getPesel()).isEqualTo(userDto.getPesel());
     }
 
 }

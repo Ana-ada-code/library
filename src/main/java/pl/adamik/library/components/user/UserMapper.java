@@ -14,10 +14,10 @@ public class UserMapper {
 
     static User toEntity(UserDto user) {
         User entity = new User();
-        entity.setId(user.id());
-        entity.setFirstName(user.firstName());
-        entity.setLastName(user.lastName());
-        entity.setPesel(user.pesel());
+        entity.setId(user.getId());
+        entity.setFirstName(user.getFirstName());
+        entity.setLastName(user.getLastName());
+        entity.setPesel(user.getPesel());
         return entity;
     }
 }

@@ -57,8 +57,8 @@ class UserServiceTest {
 
         // Then
         assertThat(result).hasSize(2);
-        assertThat(result.get(0).firstName()).isEqualTo("Jan");
-        assertThat(result.get(1).firstName()).isEqualTo("Anna");
+        assertThat(result.get(0).getFirstName()).isEqualTo("Jan");
+        assertThat(result.get(1).getFirstName()).isEqualTo("Anna");
 
         verify(userRepository, times(1)).findAll();
     }
@@ -101,8 +101,8 @@ class UserServiceTest {
 
         // Then
         assertThat(result).hasSize(2);
-        assertThat(result.get(0).lastName()).containsIgnoringCase(lastName);
-        assertThat(result.get(1).lastName()).containsIgnoringCase(lastName);
+        assertThat(result.get(0).getLastName()).containsIgnoringCase(lastName);
+        assertThat(result.get(1).getLastName()).containsIgnoringCase(lastName);
 
         verify(userRepository, times(1)).findAllByLastNameContainingIgnoreCase(lastName);
     }
@@ -133,7 +133,7 @@ class UserServiceTest {
         savedUser.setLastName("Kowalska");
         savedUser.setPesel("12345678901");
 
-        when(userRepository.findByPesel(userDto.pesel())).thenReturn(Optional.empty());
+        when(userRepository.findByPesel(userDto.getPesel())).thenReturn(Optional.empty());
         when(userRepository.save(any(User.class))).thenReturn(savedUser);
 
         // When
@@ -141,12 +141,12 @@ class UserServiceTest {
 
         // Then
         assertThat(result).isNotNull();
-        assertThat(result.id()).isEqualTo(1L);
-        assertThat(result.firstName()).isEqualTo("Anna");
-        assertThat(result.lastName()).isEqualTo("Kowalska");
-        assertThat(result.pesel()).isEqualTo("12345678901");
+        assertThat(result.getId()).isEqualTo(1L);
+        assertThat(result.getFirstName()).isEqualTo("Anna");
+        assertThat(result.getLastName()).isEqualTo("Kowalska");
+        assertThat(result.getPesel()).isEqualTo("12345678901");
 
-        verify(userRepository, times(1)).findByPesel(userDto.pesel());
+        verify(userRepository, times(1)).findByPesel(userDto.getPesel());
         verify(userRepository, times(1)).save(any(User.class));
     }
 
@@ -160,13 +160,13 @@ class UserServiceTest {
         existingUser.setLastName("Nowak");
         existingUser.setPesel("98765432109");
 
-        when(userRepository.findByPesel(userDto.pesel())).thenReturn(Optional.of(existingUser));
+        when(userRepository.findByPesel(userDto.getPesel())).thenReturn(Optional.of(existingUser));
 
         // When & Then
         assertThatThrownBy(() -> userService.save(userDto))
                 .isInstanceOf(DuplicatePeselException.class);
 
-        verify(userRepository, times(1)).findByPesel(userDto.pesel());
+        verify(userRepository, times(1)).findByPesel(userDto.getPesel());
         verify(userRepository, never()).save(any(User.class));
     }
 
@@ -187,10 +187,10 @@ class UserServiceTest {
 
         // Then
         assertThat(result).isPresent();
-        assertThat(result.get().id()).isEqualTo(userId);
-        assertThat(result.get().firstName()).isEqualTo("Anna");
-        assertThat(result.get().lastName()).isEqualTo("Kowalska");
-        assertThat(result.get().pesel()).isEqualTo("12345678901");
+        assertThat(result.get().getId()).isEqualTo(userId);
+        assertThat(result.get().getFirstName()).isEqualTo("Anna");
+        assertThat(result.get().getLastName()).isEqualTo("Kowalska");
+        assertThat(result.get().getPesel()).isEqualTo("12345678901");
 
         verify(userRepository, times(1)).findById(userId);
     }
@@ -228,7 +228,7 @@ class UserServiceTest {
         updatedUser.setLastName("Nowak");
         updatedUser.setPesel("12345678901");
 
-        when(userRepository.findByPesel(userDto.pesel())).thenReturn(Optional.of(existingUser));
+        when(userRepository.findByPesel(userDto.getPesel())).thenReturn(Optional.of(existingUser));
         when(userRepository.save(any(User.class))).thenReturn(updatedUser);
 
         // When
@@ -236,11 +236,11 @@ class UserServiceTest {
 
         // Then
         assertThat(result).isNotNull();
-        assertThat(result.firstName()).isEqualTo("Anna");
-        assertThat(result.lastName()).isEqualTo("Nowak");
-        assertThat(result.pesel()).isEqualTo("12345678901");
+        assertThat(result.getFirstName()).isEqualTo("Anna");
+        assertThat(result.getLastName()).isEqualTo("Nowak");
+        assertThat(result.getPesel()).isEqualTo("12345678901");
 
-        verify(userRepository, times(1)).findByPesel(userDto.pesel());
+        verify(userRepository, times(1)).findByPesel(userDto.getPesel());
         verify(userRepository, times(1)).save(any(User.class));
     }
 
@@ -255,13 +255,13 @@ class UserServiceTest {
         existingUser.setLastName("Kowalska");
         existingUser.setPesel("12345678901");
 
-        when(userRepository.findByPesel(userDto.pesel())).thenReturn(Optional.of(existingUser));
+        when(userRepository.findByPesel(userDto.getPesel())).thenReturn(Optional.of(existingUser));
 
         // When & Then
         assertThatThrownBy(() -> userService.update(userDto))
                 .isInstanceOf(DuplicatePeselException.class);
 
-        verify(userRepository, times(1)).findByPesel(userDto.pesel());
+        verify(userRepository, times(1)).findByPesel(userDto.getPesel());
         verify(userRepository, never()).save(any(User.class));
     }
 
