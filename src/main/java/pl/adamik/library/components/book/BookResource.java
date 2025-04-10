@@ -64,7 +64,11 @@ public class BookResource {
 
     @PutMapping("/{id}")
     public ResponseEntity<BookDto> update(@PathVariable Long id,
-                                          @RequestBody BookDto book) {
+                                          @RequestBody @Valid BookDto book, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, bindingResult.getFieldError().getDefaultMessage());
+        }
+
         if (!id.equals(book.getId())) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
