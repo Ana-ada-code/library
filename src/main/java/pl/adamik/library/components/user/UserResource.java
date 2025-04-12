@@ -76,6 +76,12 @@ public class UserResource {
         return ResponseEntity.ok(updatedUser);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> delete(@PathVariable Long id) {
+        userService.deleteUser(id);
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping("/{id}/loans")
     public List<UserLoanDto> getUserLoans(@PathVariable Long id) {
         return userService.getUserLoans(id);

@@ -72,4 +72,10 @@ class UserService {
                 .map(UserLoanMapper::toDto)
                 .collect(Collectors.toList());
     }
+
+    @Transactional
+    public boolean deleteUser(Long id) {
+        userRepository.deleteById(id);
+        return true;
+    }
 }

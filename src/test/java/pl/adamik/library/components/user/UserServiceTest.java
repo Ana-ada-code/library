@@ -20,6 +20,8 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 
@@ -341,6 +343,32 @@ class UserServiceTest {
         assertThat(result).isEmpty();
 
         verify(userRepository, times(1)).findById(userId);
+    }
+
+    @Test
+    void deleteUser_existingUser_shouldDeleteAndReturnTrue() {
+        // given
+        Long userId = 1L;
+        doNothing().when(userRepository).deleteById(userId);
+
+        // when
+        boolean result = userService.deleteUser(userId);
+
+        // then
+        assertTrue(result);
+        verify(userRepository, times(1)).deleteById(userId);
+    }
+
+
+    @Test
+    void deleteUser_nonExistingUser_shouldStillReturnTrue_butMaybeLog() {
+        // given
+        Long userId = 999L;
+        doThrow(new RuntimeException("User not found")).when(userRepository).deleteById(userId);
+
+        // when / then
+        assertThrows(RuntimeException.class, () -> userService.deleteUser(userId));
+        verify(userRepository, times(1)).deleteById(userId);
     }
 
 }

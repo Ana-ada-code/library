@@ -23,6 +23,6 @@ public class User {
     @Column(unique = true)
     private String pesel;
     @Builder.Default
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<Loan> loans = new ArrayList<>();
 }
