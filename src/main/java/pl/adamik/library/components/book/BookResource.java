@@ -89,4 +89,10 @@ public class BookResource {
         return bookService.getBookDetails(isbn);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> delete(@PathVariable Long id) {
+        bookService.deleteBook(id);
+        return ResponseEntity.noContent().build();
+    }
+
 }

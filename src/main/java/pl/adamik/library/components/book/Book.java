@@ -25,6 +25,6 @@ public class Book {
     @JoinColumn(name = "genre_id", referencedColumnName = "id")
     private Genre genre;
     @Builder.Default
-    @OneToMany(mappedBy = "book")
+    @OneToMany(mappedBy = "book", cascade = CascadeType.REMOVE)
     private List<Loan> loans = new ArrayList<>();
 }

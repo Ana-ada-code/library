@@ -20,6 +20,8 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -307,4 +309,31 @@ class BookServiceTest {
 
         verify(bookRepository, times(1)).findById(bookId);
     }
+
+    @Test
+    void deleteBook_existingBook_shouldDeleteAndReturnTrue() {
+        // given
+        Long bookId = 1L;
+        doNothing().when(bookRepository).deleteById(bookId);
+
+        // when
+        boolean result = bookService.deleteBook(bookId);
+
+        // then
+        assertTrue(result);
+        verify(bookRepository, times(1)).deleteById(bookId);
+    }
+
+    @Test
+    void deleteBook_nonExistingBook_shouldThrowException() {
+        // given
+        Long bookId = 999L;
+        doThrow(new RuntimeException("Book not found")).when(bookRepository).deleteById(bookId);
+
+        // when / then
+        assertThrows(RuntimeException.class, () -> bookService.deleteBook(bookId));
+        verify(bookRepository, times(1)).deleteById(bookId);
+    }
+
+
 }

@@ -95,4 +95,10 @@ public class BookService {
         }
     }
 
+    @Transactional
+    public boolean deleteBook(Long id) {
+        bookRepository.deleteById(id);
+        return true;
+    }
+
 }
