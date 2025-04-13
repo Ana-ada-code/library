@@ -27,13 +27,14 @@ public class BookMapper {
     }
 
     Book toEntity(BookDto dto) {
-        Book entity = new Book();
-        entity.setId(dto.getId());
-        entity.setTitle(dto.getTitle());
-        entity.setAuthor(dto.getAuthor());
-        entity.setIsbn(dto.getIsbn());
-        Optional<Genre> genre = genreRepository.findByName(dto.getGenre());
-        genre.ifPresent(entity::setGenre);
-        return entity;
+        Genre genreEntity = genreRepository.findByName(dto.getGenre()).orElse(null);
+
+        return Book.builder()
+                .id(dto.getId())
+                .title(dto.getTitle())
+                .author(dto.getAuthor())
+                .isbn(dto.getIsbn())
+                .genre(genreEntity)
+                .build();
     }
 }
