@@ -80,13 +80,13 @@ public class BookResource {
     }
 
     @GetMapping("/{id}/loans")
-    public List<BookLoanDto> getAssetAssignments(@PathVariable Long id) {
-        return bookService.getBookLoans(id);
+    public List<BookLoanDto> findAssetAssignments(@PathVariable Long id) {
+        return bookService.findBookLoans(id);
     }
 
     @GetMapping("/details/{isbn}")
-    public BookDetails getBookDetails(@PathVariable String isbn) {
-        return bookService.getBookDetails(isbn);
+    public BookDetails findBookDetails(@PathVariable String isbn) {
+        return bookService.findBookDetails(isbn);
     }
 
     @DeleteMapping("/{id}")

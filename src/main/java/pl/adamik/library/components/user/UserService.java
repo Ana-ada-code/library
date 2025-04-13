@@ -64,7 +64,7 @@ class UserService {
         return UserMapper.toDto(savedUser);
     }
 
-    List<UserLoanDto> getUserLoans(Long userId) {
+    List<UserLoanDto> findUserLoans(Long userId) {
         return userRepository.findById(userId)
                 .map(User::getLoans)
                 .orElseThrow(UserNotFoundException::new)

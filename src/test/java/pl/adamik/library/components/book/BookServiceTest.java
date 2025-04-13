@@ -266,7 +266,7 @@ class BookServiceTest {
                 .collect(Collectors.toList());
 
         // When
-        List<BookLoanDto> result = bookService.getBookLoans(bookId);
+        List<BookLoanDto> result = bookService.findBookLoans(bookId);
 
         // Then
         assertThat(result).hasSize(2);
@@ -282,7 +282,7 @@ class BookServiceTest {
         when(bookRepository.findById(bookId)).thenReturn(Optional.empty());
 
         // When & Then
-        assertThatThrownBy(() -> bookService.getBookLoans(bookId))
+        assertThatThrownBy(() -> bookService.findBookLoans(bookId))
                 .isInstanceOf(BookNotFoundException.class);
 
         verify(bookRepository, times(1)).findById(bookId);
@@ -302,7 +302,7 @@ class BookServiceTest {
         when(bookRepository.findById(bookId)).thenReturn(Optional.of(book));
 
         // When
-        List<BookLoanDto> result = bookService.getBookLoans(bookId);
+        List<BookLoanDto> result = bookService.findBookLoans(bookId);
 
         // Then
         assertThat(result).isEmpty();

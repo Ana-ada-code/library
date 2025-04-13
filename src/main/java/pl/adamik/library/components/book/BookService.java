@@ -56,7 +56,7 @@ public class BookService {
         return bookMapper.toDto(savedBook);
     }
 
-    List<BookLoanDto> getBookLoans(Long id) {
+    List<BookLoanDto> findBookLoans(Long id) {
         return bookRepository.findById(id)
                 .map(Book::getLoans)
                 .orElseThrow(BookNotFoundException::new)
@@ -65,7 +65,7 @@ public class BookService {
                 .collect(Collectors.toList());
     }
 
-    public BookDetails getBookDetails(String isbn) {
+    public BookDetails findBookDetails(String isbn) {
         String url = UriComponentsBuilder.fromHttpUrl("https://openlibrary.org/api/books")
                 .queryParam("bibkeys", "ISBN:{isbn}")
                 .queryParam("format", "json")

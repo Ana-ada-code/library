@@ -83,7 +83,7 @@ public class UserResource {
     }
 
     @GetMapping("/{id}/loans")
-    public List<UserLoanDto> getUserLoans(@PathVariable Long id) {
-        return userService.getUserLoans(id);
+    public List<UserLoanDto> findUserLoans(@PathVariable Long id) {
+        return userService.findUserLoans(id);
     }
 }
