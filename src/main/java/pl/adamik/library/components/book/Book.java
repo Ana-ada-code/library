@@ -1,7 +1,11 @@
 package pl.adamik.library.components.book;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import pl.adamik.library.components.genre.Genre;
 import pl.adamik.library.components.loan.Loan;
 
