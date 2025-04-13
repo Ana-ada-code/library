@@ -15,7 +15,7 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 @Service
-public class LoanService {
+class LoanService {
 
     private final LoanRepository loanRepository;
     private final BookRepository bookRepository;
@@ -33,7 +33,7 @@ public class LoanService {
         Optional<Loan> activeLoanForBook = loanRepository.findByBook_IdAndFinishIsNull(loanDto.id());
 
         activeLoanForBook.ifPresent((a) -> {
-            throw new InvalidLoadException("Ta książka jest aktualnie przez kogoś wypożyczona");
+            throw new InvalidLoadException("This book is currently being borrowed by someone");
         });
 
         Optional<User> user = userRepository.findById(loanDto.userId());
@@ -42,9 +42,9 @@ public class LoanService {
         Long userId = loanDto.userId();
         Long bookId = loanDto.bookId();
         loan.setUser(user.orElseThrow(() ->
-                new InvalidLoadException("Brak użytkownika z id: " + userId)));
+                new InvalidLoadException("No user with ID: " + userId)));
         loan.setBook(book.orElseThrow(() ->
-                new InvalidLoadException("Brak wypożyczenia z id: " + bookId)));
+                new InvalidLoadException("No user with ID: " + bookId)));
         loan.setStart(LocalDate.now());
         return LoanMapper.toDto(loanRepository.save(loan));
     }

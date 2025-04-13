@@ -300,7 +300,7 @@ class UserServiceTest {
                 .collect(Collectors.toList());
 
         // When
-        List<UserLoanDto> result = userService.getUserLoans(userId);
+        List<UserLoanDto> result = userService.findUserLoans(userId);
 
         // Then
         assertThat(result).hasSize(2);
@@ -316,7 +316,7 @@ class UserServiceTest {
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
         // When & Then
-        assertThatThrownBy(() -> userService.getUserLoans(userId))
+        assertThatThrownBy(() -> userService.findUserLoans(userId))
                 .isInstanceOf(UserNotFoundException.class);
 
         verify(userRepository, times(1)).findById(userId);
@@ -337,7 +337,7 @@ class UserServiceTest {
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
 
         // When
-        List<UserLoanDto> result = userService.getUserLoans(userId);
+        List<UserLoanDto> result = userService.findUserLoans(userId);
 
         // Then
         assertThat(result).isEmpty();

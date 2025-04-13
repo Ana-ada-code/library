@@ -3,7 +3,7 @@ package pl.adamik.library.components.book;
 import pl.adamik.library.components.book.dto.BookLoanDto;
 import pl.adamik.library.components.loan.Loan;
 
-public class BookLoanMapper {
+class BookLoanMapper {
 
     static BookLoanDto toDto(Loan loan) {
         return new BookLoanDto(

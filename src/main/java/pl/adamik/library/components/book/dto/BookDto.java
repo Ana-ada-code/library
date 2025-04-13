@@ -7,13 +7,13 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class BookDto {
-        private Long id;
+        final private Long id;
         @NotBlank(message = "Title is required")
-        private String title;
+        final private String title;
         @NotBlank(message = "Author is required")
-        private String author;
+        final private String author;
         @NotBlank(message = "ISBN is required")
-        private String isbn;
+        final private String isbn;
         @NotBlank(message = "Genre is required")
-        private String genre;
+        final private String genre;
 }

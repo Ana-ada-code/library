@@ -2,6 +2,7 @@ package pl.adamik.library.components.book;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
@@ -16,8 +17,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
-public class BookService {
+class BookService {
 
     private final BookRepository bookRepository;
     private final BookMapper bookMapper;
@@ -56,7 +58,7 @@ public class BookService {
         return bookMapper.toDto(savedBook);
     }
 
-    List<BookLoanDto> getBookLoans(Long id) {
+    List<BookLoanDto> findBookLoans(Long id) {
         return bookRepository.findById(id)
                 .map(Book::getLoans)
                 .orElseThrow(BookNotFoundException::new)
@@ -65,7 +67,7 @@ public class BookService {
                 .collect(Collectors.toList());
     }
 
-    public BookDetails getBookDetails(String isbn) {
+    public BookDetails findBookDetails(String isbn) {
         String url = UriComponentsBuilder.fromHttpUrl("https://openlibrary.org/api/books")
                 .queryParam("bibkeys", "ISBN:{isbn}")
                 .queryParam("format", "json")
@@ -90,7 +92,7 @@ public class BookService {
 
             return new BookDetails(numberOfPages, coverImage, publishDate, publishers);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Error while fetching book details from OpenLibrary for ISBN: {}", isbn, e);
             return new BookDetails(0, "", "", new ArrayList<>());
         }
     }
