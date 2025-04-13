@@ -8,7 +8,7 @@ import pl.adamik.library.components.genre.GenreRepository;
 import java.util.Optional;
 
 @Service
-public class BookMapper {
+class BookMapper {
 
     private final GenreRepository genreRepository;
 

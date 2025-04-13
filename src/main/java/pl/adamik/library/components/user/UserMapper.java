@@ -2,7 +2,7 @@ package pl.adamik.library.components.user;
 
 import pl.adamik.library.components.user.dto.UserDto;
 
-public class UserMapper {
+class UserMapper {
     static UserDto toDto(User user) {
         return new UserDto(
                 user.getId(),

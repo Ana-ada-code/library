@@ -2,7 +2,7 @@ package pl.adamik.library.components.loan;
 
 import pl.adamik.library.components.loan.dto.LoanDto;
 
-public class LoanMapper {
+class LoanMapper {
 
     static LoanDto toDto(Loan loan) {
         return new LoanDto(

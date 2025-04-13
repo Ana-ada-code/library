@@ -15,7 +15,7 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 @Service
-public class LoanService {
+class LoanService {
 
     private final LoanRepository loanRepository;
     private final BookRepository bookRepository;
