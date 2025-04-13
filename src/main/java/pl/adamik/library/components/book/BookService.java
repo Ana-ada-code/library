@@ -2,6 +2,7 @@ package pl.adamik.library.components.book;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 class BookService {
 
@@ -90,7 +92,7 @@ class BookService {
 
             return new BookDetails(numberOfPages, coverImage, publishDate, publishers);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Error while fetching book details from OpenLibrary for ISBN: {}", isbn, e);
             return new BookDetails(0, "", "", new ArrayList<>());
         }
     }
