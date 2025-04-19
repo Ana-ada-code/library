@@ -24,7 +24,7 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping("/books")
+@RequestMapping("/api/books")
 public class BookResource {
 
     private final BookService bookService;

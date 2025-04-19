@@ -16,7 +16,7 @@ import java.net.URI;
 import java.time.LocalDate;
 
 @RestController
-@RequestMapping("/loans")
+@RequestMapping("/api/loans")
 public class LoanResource {
 
     private final LoanService loanService;

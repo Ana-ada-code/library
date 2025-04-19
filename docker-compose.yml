@@ -1,7 +1,6 @@
 version: '3.8'
 
 services:
-  # MySQL service
   mysql:
     image: mysql:8
     container_name: library-mysql
@@ -18,10 +17,9 @@ services:
     networks:
       - library_network
 
-  # Backend service (Spring Boot)
   backend:
     build:
-      context: . # Assuming the Spring app is in the "library" folder
+      context: .
     container_name: library-backend
     restart: unless-stopped
     environment:
@@ -30,18 +28,16 @@ services:
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
     ports:
-      - "8080:8080"
+      - "8081:8080"
     depends_on:
       - mysql
     networks:
       - library_network
 
-# Networks configuration
 networks:
   library_network:
     external: true
 
-# Volumes configuration
 volumes:
   mysql_data:
 

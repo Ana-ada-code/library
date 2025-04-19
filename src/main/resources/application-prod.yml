@@ -5,6 +5,5 @@ spring:
     password: ${DB_PASSWORD}
   liquibase:
     contexts: prod
-  config:
-    import: optional:db.properties
-
+server:
+  port=8081
